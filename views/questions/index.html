@@ -1,0 +1,75 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta http-equiv="X-UA-Compatible" content="ie=edge">
+  <link rel="stylesheet" href="/stylesheets/style.css">
+  <link rel="stylesheet" href="//fonts.googleapis.com/css?family=Roboto:400,500,700,400italic|Material+Icons">
+  <title>Document</title>
+</head>
+<body>
+  <div>
+    <div id="nav">
+      nav
+    </div>
+    <div class="container">
+      <section>
+        <div>
+          <input class="search" type="text" placeholder="Search ...">
+        </div>
+        <div>
+          <br>
+          <center>
+            <span>Questions</span>
+          </center>
+        </div>
+        <div>
+          <br>
+          <div id="question" class="question-card">
+            <div class="flex">
+              <div class="pad5">
+                  <i class="material-icons">
+                      people
+                      </i>
+              </div>
+              <div class="pad5">Amanze Ogbonna</div>
+            </div>
+            <div>Title</div>
+            <div>skjdks cdkjsdc skdjcs kdjc sdkcj skdcj sdkcj skdcj sdkjc sd</div>
+          </div>
+        </div>
+      </section>
+    </div>
+  </div>
+  <script>
+    document.getElementById("question").addEventListener("click", buttonClicked);
+    function buttonClicked() {
+      console.log('Yay!');
+    }
+  </script>
+  <style>
+    .question-card {
+      padding: 16px;
+      background: white;
+      border-radius: 3px;
+      box-shadow: 0px 5px 10px -2px #bcd1db;
+      margin-bottom: 10px;
+      cursor: pointer;
+    }
+    .question-card:hover {
+      box-shadow: 0px 15px 20px -2px #bcd1db;
+    }
+    
+    .search {
+      border: none;
+      border-bottom: 1px solid #eaeaea;
+      font-size: 2em;
+    }
+    .search:active, .search:focus {
+      outline: none;
+      border-bottom: 1px solid #687df7;
+    }
+  </style>
+</body>
+</html>
