@@ -9,7 +9,7 @@
   <link rel="stylesheet" href="//fonts.googleapis.com/css?family=Roboto:400,500,700,400italic|Material+Icons">
   <title>Document</title>
 </head>
-<body>
+<body onload="initPage()">
   <div>
     <div id="nav">
       nav
@@ -17,7 +17,8 @@
     <div class="container">
       <section>
         <div>
-          <input class="search" type="text" placeholder="Search ...">
+          <input class="search" type="text" placeholder="Search ..."
+          id="query-input">
         </div>
         <div>
           <br>
@@ -25,14 +26,12 @@
             <span>Questions</span>
           </center>
         </div>
-        <div>
+        <div id="question-list">
           <br>
           <div id="question" class="question-card">
             <div class="flex">
               <div class="pad5">
-                  <i class="material-icons">
-                      people
-                      </i>
+                <i class="material-icons">people</i>
               </div>
               <div class="pad5">Amanze Ogbonna</div>
             </div>
@@ -41,12 +40,56 @@
           </div>
         </div>
       </section>
+      <button onclick="getQuestions()">dkfjd</button>
     </div>
   </div>
+  <div id="snackbar"></div>
   <script>
-    document.getElementById("question").addEventListener("click", buttonClicked);
-    function buttonClicked() {
-      console.log('Yay!');
+    function getQuestions() {
+      var query = findById('query-input').value
+      var options = {
+        method: 'GET',
+        headers: {
+          'Authorization': 'Bearer ' + localStorage.currentUserAuth, 
+        },
+      }
+      http(HOST + '/questions', options, function(res) {
+        // clear list
+        // append to list
+      }, function(err) {
+        // show not found
+      })
+      return false;    
+    }
+
+    function appendQuestion(question) {
+      
+      // <div id="question" class="question-card">
+      //       <div class="flex">
+      //         <div class="pad5">
+      //           <i class="material-icons">people</i>
+      //         </div>
+      //         <div class="pad5">Amanze Ogbonna</div>
+      //       </div>
+      //       <div>Title</div>
+      //       <div>skjdks cdkjsdc skdjcs kdjc sdkcj skdcj sdkcj skdcj sdkjc sd</div>
+      //     </div>
+
+      // div#question-id.question >
+      //   div.flex >
+      //     div.pad5 > 
+      //       i.material-icons > 
+      //         "people"
+      //     div.pad5 > 
+      //       "question.user.name"
+      //   div >
+      //     "question.title"
+      //   div
+      //     "question.body.substr"
+    }
+
+    function initPage(){
+      getQuestions();
     }
   </script>
   <style>

@@ -1,5 +1,5 @@
 body {
-  padding: 50px;
+  /* padding: 50px; */
   font: 14px "Lucida Grande", Helvetica, Arial, sans-serif;
 }
 
@@ -12,3 +12,107 @@ a {
 .pad5 {padding: 5px;}
 
 .container{padding:0.01em 16px}
+@media screen and (min-width: 480px) {
+  .container{padding: 16px}
+}
+.card {
+  border-radius: 3px;
+  background: white;
+  box-shadow: 0 3px 1px -2px rgba(0, 0, 0, 0.2), 0 2px 2px 0 rgba(0, 0, 0, 0.14), 0 1px 5px 0 rgba(0, 0, 0, 0.12);
+}
+
+input {
+  border: none;
+  border-bottom: 1px solid #eaeaea;
+  font-size: 1em;
+  min-width: 95%;
+}
+input:active, input:focus {
+  outline: none;
+  border-bottom: 1px solid #687df7;
+}
+button {
+  border: none;
+  min-width: 88px;
+  height: 36px;
+  padding-left: 16px;
+  padding-right: 16px;
+  margin: 6px 8px;
+  -webkit-user-select: none;
+  -moz-user-select: none;
+  -ms-user-select: none;
+  user-select: none;
+  border-radius: 2px;
+  font-size: 14px;
+  font-weight: 500;
+}
+
+button.raised {
+  border-radius: 3px;
+  /* background: white; */
+  box-shadow: 0 3px 1px -2px rgba(0, 0, 0, 0.2), 0 2px 2px 0 rgba(0, 0, 0, 0.14), 0 1px 5px 0 rgba(0, 0, 0, 0.12);
+}
+
+button.primary { background: #00136c; color: #e1f8ff;}
+button:disabled { background: #ccc; color: #333; }
+
+div.center {
+  margin-left: auto;
+  margin-right: auto
+}
+
+.w300 { width: 300px; }
+.w400 { width: 400px; }
+
+.text-right { text-align: right; }
+
+/* SNACKBAR */
+/* The snackbar - position it at the bottom and in the middle of the screen */
+#snackbar {
+  visibility: hidden; 
+  min-width: 250px; /* Set a default minimum width */
+  margin-left: -125px; /* Divide value of min-width by 2 */
+  background-color: #333; /* Black background color */
+  color: #fff; /* White text color */
+  text-align: center; /* Centered text */
+  border-radius: 2px; /* Rounded borders */
+  padding: 16px; /* Padding */
+  position: fixed; /* Sit on top of the screen */
+  z-index: 1; /* Add a z-index if needed */
+  
+  bottom: 0px;
+  left: 0px;
+  right: 0px;
+}
+
+/* Show the snackbar when clicking on a button (class added with JavaScript) */
+#snackbar.show {
+  visibility: visible; /* Show the snackbar */
+  /* Add animation: Take 0.5 seconds to fade in and out the snackbar. 
+ However, delay the fade out process for 2.5 seconds */
+ -webkit-animation: fadein 0.5s, fadeout 0.5s 2.5s;
+ animation: fadein 0.5s, fadeout 0.5s 2.5s;
+}
+
+/* Animations to fade the snackbar in and out */
+@-webkit-keyframes fadein {
+  from {bottom: -30px; opacity: 0;} 
+  to {bottom: 0px; opacity: 1;}
+}
+
+@keyframes fadein {
+  from {bottom: -30px; opacity: 0;}
+  to {bottom: 0; opacity: 1;}
+}
+
+@-webkit-keyframes fadeout {
+  from {bottom: 0; opacity: 1;} 
+  to {bottom: -30px; opacity: 0;}
+}
+
+@keyframes fadeout {
+  from {bottom: 0; opacity: 1;}
+  to {bottom: -30px; opacity: 0;}
+}
+
+/*  */

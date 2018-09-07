@@ -1,0 +1,94 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta http-equiv="X-UA-Compatible" content="ie=edge">
+  <link rel="stylesheet" href="/stylesheets/style.css">
+  <script src="/javascripts/main.js"></script>
+  <title>Document</title>
+</head>
+<body>
+  <div>
+    <div class="container">
+      <section>
+        <br>
+        <br>
+        <div>
+          <center>
+            <span>LOGIN</span>
+          </center>
+        </div>
+        <br>
+
+        <div>
+          <div class="card center w300 pad">
+            <form onsubmit="return login(event)">
+              <div class="pad">
+                <input id="login-email" type="text" placeholder="Email" required>
+              </div>
+              <div class="pad">
+                <input id="login-password" type="password" placeholder="Password" required>
+              </div>
+              <br>
+              <center>
+                <span class="psw">Don't have an account? <a href="/register">Register</a></span>
+              </center>
+              
+              <div class="pad text-right">
+                <!-- <input type="button" class="raised primary"> -->
+                <button class="raised primary"
+                id="submit-button">LOGIN</button>
+              </div>
+            </form>
+          </div>
+        </div>
+      </section>
+    </div>
+  </div>
+  <div id="snackbar"></div>
+  <script>
+    var login = function(event) {
+      event.preventDefault();
+      
+      var params = {
+        email: getInputValue('login-email'),
+        password: getInputValue('login-password')
+      }
+      var options = {
+        method: 'post',
+        // body: new URLSearchParams(params).toString()
+        body: JSON.stringify(params)
+      }
+      
+      var submitButton = findById('submit-button')
+      submitButton.disabled = true;
+      // window.location.href = '//' + window.location.host + '/login';
+
+      submitButton.innerText = 'LOADING...'
+      http(HOST + '/login', options, function(res) {
+        // res: {message, data}
+        showSnackbar(res.message)
+        localStorage.currentUserAuth = res.token
+        localStorage.currentUser = JSON.stringify(res.user)
+        console.log(res.message);
+        setTimeout(() => {
+          window.location.href = '//' + window.location.host + '/questions';
+        }, 1000);
+      }, function(err) {
+        showSnackbar(getErrorText(err));
+        submitButton.disabled = false;
+        submitButton.innerText = 'LOGIN'
+        console.log('Failed');
+      })
+      return false;      
+    }
+  </script>
+  <style>
+    body {
+      background: #c3f1ff;
+    }
+  
+  </style>
+</body>
+</html>
