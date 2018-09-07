@@ -1,3 +1,4 @@
+'use strict';
 var createError = require('http-errors');
 var express = require('express');
 var path = require('path');
@@ -11,7 +12,7 @@ var app = express();
 
 var cons = require('consolidate');
 // view engine setup
-app.engine('html', cons.swig)
+app.engine('html', cons.swig);
 app.set('views', path.join(__dirname, 'views'));
 app.set('view engine', 'html');
 // app.set('view engine', 'jade');

@@ -5,6 +5,7 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <meta http-equiv="X-UA-Compatible" content="ie=edge">
   <link rel="stylesheet" href="/stylesheets/style.css">
+  <script src="/javascripts/main.js"></script>
   <title>Document</title>
 </head>
 <body>
@@ -20,12 +21,18 @@
               Get started
             </button>
           </a>
+          <button id="myBtn">
+            Get started
+          </button>
         </div>
       </section>
     </div>
   </div>
   <script>
-    document.getElementById("myBtn").addEventListener("click", displayDate);
+    // document.getElementById("myBtn").addEventListener("click", function(params) {
+    findById("myBtn").addEventListener("click", function(params) {
+      console.log("jfdjffdhjdfjhj")
+    });
   </script>
 </body>
 </html>
