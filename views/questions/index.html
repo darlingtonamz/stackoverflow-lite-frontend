@@ -18,7 +18,9 @@
       <section>
         <div>
           <input class="search" type="text" placeholder="Search ..."
-          id="query-input">
+          id="query-input"
+          onchange="getQuestions()"
+          onkeyup="getQuestions()">
         </div>
         <div>
           <br>
@@ -40,7 +42,7 @@
           </div>
         </div>
       </section>
-      <button onclick="getQuestions()">dkfjd</button>
+      <!-- <button onclick="getQuestions()">dkfjd</button> -->
     </div>
   </div>
   <div id="snackbar"></div>
@@ -53,16 +55,33 @@
           'Authorization': 'Bearer ' + localStorage.currentUserAuth, 
         },
       }
-      http(HOST + '/questions', options, function(res) {
+      http(HOST + '/questions?title='+query, options, function(res) {
         // clear list
+        clearQuestions()
         // append to list
+        appendQuestions(res.data)
       }, function(err) {
         // show not found
       })
       return false;    
     }
 
-    function appendQuestion(question) {
+    function clearQuestions() {
+      var questionList = findById('question-list')
+      while (questionList.firstChild) {
+        questionList.removeChild(questionList.firstChild);
+      }
+    }
+
+    function appendQuestions(questions) {
+      var questionList = findById('question-list')
+      questions.forEach(question => {
+        questionList
+        .appendChild(getQuestionTemplate(question))
+      });
+    }
+
+    function getQuestionTemplate(question) {
       
       // <div id="question" class="question-card">
       //       <div class="flex">
@@ -74,7 +93,39 @@
       //       <div>Title</div>
       //       <div>skjdks cdkjsdc skdjcs kdjc sdkcj skdcj sdkcj skdcj sdkjc sd</div>
       //     </div>
+      var iconDivNode = document.createElement('DIV')
+      iconDivNode.className = "pad5"
+      var iconNode = document.createElement('I')
+      iconNode.className="material-icons"
+      iconDivNode.appendChild(iconNode)
+      iconNode.appendChild(document.createTextNode("people"))
 
+      var usernameNode = document.createElement('DIV')
+      usernameNode.className = "pad5"
+      usernameNode.appendChild(document.createTextNode(
+        question.user ? question.user.name : 'username'))
+
+      var infoNode = document.createElement('div')
+      infoNode.className = "flex"
+      infoNode.appendChild(iconDivNode)
+      infoNode.appendChild(usernameNode)
+
+      var rootNode = document.createElement("DIV");
+      rootNode.className = "question-card"
+      rootNode.appendChild(
+        document.createElement('DIV').appendChild(
+          infoNode   
+        )
+      )   
+      
+      var titleNode = document.createElement('DIV')
+      titleNode.appendChild(document.createTextNode(question.title))  
+      var bodyNode = document.createElement('DIV')
+      bodyNode.appendChild(document.createTextNode(question.body))
+      rootNode.appendChild(titleNode)
+      rootNode.appendChild(bodyNode)  
+      
+      return rootNode
       // div#question-id.question >
       //   div.flex >
       //     div.pad5 > 

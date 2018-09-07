@@ -6,6 +6,9 @@
   "globals": {
     "describe": true,
     "it": true,
-    "before": true
+    "before": true,
+    "document": true,
+    "fetch": true,
+    "Promise": true
   }
 }
