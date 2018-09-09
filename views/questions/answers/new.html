@@ -1,0 +1,133 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta http-equiv="X-UA-Compatible" content="ie=edge">
+  <link rel="stylesheet" href="/stylesheets/style.css">
+  <script src="/javascripts/main.js"></script>
+  <title>New Answer</title>
+</head>
+<body onload="globalMounted()">
+  <div>
+    <div class="container">
+        <div>
+          <div id="question" class="question-card">
+            <div class="flex">
+              <span>Question</span>
+            </div>
+            <div class="title" id="question-title">Title</div>
+            <div id="question-body">Loading question ... </div>
+          </div>
+        </div>
+      <section>
+        <br>
+        <br>
+        <div>
+          <center>
+            <span>Your Answer</span>
+          </center>
+        </div>
+        <br>
+
+        <div>
+          <div class="card center w500 pad">
+            <form onsubmit="return register(event)">
+              <div class="pad">
+                <textarea id="answer-body" rows="5" type="textarea" placeholder="Body of your answer" required></textarea>
+              </div>
+              <div class="pad text-right">
+                <button class="raised primary"
+                id="submit-button">SUBMIT</button>
+              </div>
+            </form>
+          </div>
+        </div>
+      </section>
+    </div>
+  </div>
+  <div id="snackbar"></div>
+  <script>
+    var questionId = null;
+    function getQuestion() {
+      questionId = parseInt(getParameterByName('id'))
+
+      var question = localStorage.question
+      if (question && (question.id === questionId)) {
+        setQuestion(question)
+      } else {
+        http(HOST + '/questions/' + questionId, null, function(res) {
+          setQuestion(res.data)
+        }, function(err) {
+          // show not found
+        })
+      }
+    }
+
+    function setQuestion(question) {
+      var questionTitle = findById('question-title');
+      var questionBody = findById('question-body');
+
+      questionTitle.innerHTML = question.title;
+      // questionTitle.appendChild(
+      //     document.createTextNode(question.title))
+      questionBody.innerHTML = question.body;
+    }
+    
+    function register(event) {
+      event.preventDefault();
+      // console.log("JSDSJHDFJDFH");
+      var params = {
+        // title: getInputValue('answer-title'),
+        body: getInputValue('answer-body'),
+      }
+      var options = {
+        method: 'post',
+        body: JSON.stringify(params),
+        headers: {
+          'Authorization': 'Bearer ' + localStorage.currentUserAuth, 
+        },
+      }
+
+      var submitButton = findById('submit-button')
+      submitButton.disabled = true;
+
+      submitButton.innerText = 'LOADING...'
+      http(HOST + '/questions/' + questionId + '/answers', options, function(res) {
+        window.location.href = '//' + window.location.host + 
+          '/questions/' + questionId + '?id=' + questionId + 'message=' + res.message;
+      }, function(err) {
+        showSnackbar(getErrorText(err));
+        submitButton.disabled = false;
+        submitButton.innerText = 'SUBMIT'
+        console.log('Failed: ', err);
+      })
+      return false;
+    }
+
+    function checkAuth() {
+      if(localStorage.currentUserAuth) {
+        return;
+      } 
+      
+      var message = 'You need to be logged in to post a answer'
+      window.location.href = '//' + 
+        window.location.host + 
+        '/login?message=' + message +
+        '&redirect=' + window.location.href;
+    }
+
+    function mounted(){
+      // console.log('From Local');
+      checkAuth();
+      getQuestion()
+    }
+  </script>
+  <style>
+    body {
+      background: #c3f1ff;
+    }
+  
+  </style>
+</body>
+</html>

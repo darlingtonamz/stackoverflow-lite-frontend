@@ -9,7 +9,7 @@
   <link rel="stylesheet" href="//fonts.googleapis.com/css?family=Roboto:400,500,700,400italic|Material+Icons">
   <title>Document</title>
 </head>
-<body onload="initPage()">
+<body onload="globalMounted()">
   <div>
     <div id="nav">
       nav
@@ -27,6 +27,16 @@
           <center>
             <span>Questions</span>
           </center>
+        </div>
+        <div>
+          <a href="/questions/new">
+            <button class="accent raised">ASk A QUESTION</button>
+          </a>
+          <br>
+          <br>
+        </div>
+        <div id="not-found">
+          <span class="title">Question not found</span>
         </div>
         <div id="question-list">
           <br>
@@ -58,15 +68,26 @@
       http(HOST + '/questions?title='+query, options, function(res) {
         // clear list
         clearQuestions()
-        // append to list
-        appendQuestions(res.data)
+        if (res.data.length > 0) {
+          // append to list
+          appendQuestions(res.data)
+        } else {
+          showNotFound(true)
+        }
+        
       }, function(err) {
         // show not found
       })
       return false;    
     }
 
+    function showNotFound(isFound) {
+      isFound ? showElement('not-found') : hideElement('not-found')
+    }
+
     function clearQuestions() {
+      showNotFound(false)
+
       var questionList = findById('question-list')
       while (questionList.firstChild) {
         questionList.removeChild(questionList.firstChild);
@@ -76,8 +97,17 @@
     function appendQuestions(questions) {
       var questionList = findById('question-list')
       questions.forEach(question => {
+        var link = document.createElement('a')
+        link.value = question
+        console.log('VAL', link.value);
+        // link.onclick = gotoQuestion(question)
+        // link.href = '#';
+        link.href = '/questions/' + 
+          question.id + '?id=' +
+          question.id;
+        link.appendChild(getQuestionTemplate(question))
         questionList
-        .appendChild(getQuestionTemplate(question))
+        .appendChild(link)
       });
     }
 
@@ -119,11 +149,15 @@
       )   
       
       var titleNode = document.createElement('DIV')
+      titleNode.className = "title"
+
       titleNode.appendChild(document.createTextNode(question.title))  
       var bodyNode = document.createElement('DIV')
       bodyNode.appendChild(document.createTextNode(question.body))
       rootNode.appendChild(titleNode)
       rootNode.appendChild(bodyNode)  
+
+      // rootNode.addEventListener('click', gotoQuestion)
       
       return rootNode
       // div#question-id.question >
@@ -141,9 +175,18 @@
 
     function initPage(){
       getQuestions();
+      // rootNode.addEventListener('click', goToQuestion(question))
+
+    }
+
+    function mounted() {
+      initPage()
     }
   </script>
   <style>
+    body {
+      background: #f2f2f2;
+    }
     .question-card {
       padding: 16px;
       background: white;
@@ -158,10 +201,12 @@
     
     .search {
       border: none;
+      background: #f2f2f2;
       border-bottom: 1px solid #eaeaea;
       font-size: 2em;
     }
     .search:active, .search:focus {
+      background: #fbfbfb;
       outline: none;
       border-bottom: 1px solid #687df7;
     }

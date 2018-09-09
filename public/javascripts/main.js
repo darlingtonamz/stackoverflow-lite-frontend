@@ -15,19 +15,19 @@ function getInputValue(id) {
   return findById(id).value;
 }
 
-function hide(id) {
+function hideElement(id) {
   findById(id).style.display = 'none';
 }
 
-function show(id) {
+function showElement(id) {
   findById(id).style.display = 'block';
 }
 
-var json = function(response) {
-  return response.json();
-};
+// var json = function(response) {
+//   return response.json();
+// };
 
-var http = function(url, options, success, failure) {
+function http(url, options, success, failure) {
   // var options = {
   //   method: 'post',
   //   headers: {
@@ -36,6 +36,9 @@ var http = function(url, options, success, failure) {
   //   body: 'foo=bar&lorem=ipsum',
   // };
 
+  if (!options) options = {
+    method: 'GET',
+  };
   if (!options.headers) options.headers = {};
   if (!options.headers['Content-Type']){
     options.headers['Content-Type'] = 'application/json; charset=utf-8';
@@ -95,4 +98,25 @@ function getErrorText(json) {
 
   console.log('Errorr0', json, text);
   return text;
+}
+
+function getParameterByName(name, url) {
+  if (!url) url = window.location.href;
+  name = name.replace(/[\[\]]/g, '\\$&');
+  var regex = new RegExp('[?&]' + name + '(=([^&#]*)|&|#|$)');
+  var results = regex.exec(url);
+  if (!results) return null;
+  if (!results[2]) return '';
+  return decodeURIComponent(results[2].replace(/\+/g, ' '));
+}
+
+function globalMounted(){
+  var message = getParameterByName('message');
+  if (message) {
+    showSnackbar(message);
+  }
+
+  if (window.mounted) {
+    window.mounted();
+  }
 }

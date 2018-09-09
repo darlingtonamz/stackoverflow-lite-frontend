@@ -1,0 +1,205 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta http-equiv="X-UA-Compatible" content="ie=edge">
+  <link rel="stylesheet" href="/stylesheets/style.css">
+  <script src="/javascripts/main.js"></script>
+  <link rel="stylesheet" href="//fonts.googleapis.com/css?family=Roboto:400,500,700,400italic|Material+Icons">
+  <title>Question details</title>
+</head>
+<body onload="globalMounted()">
+  <div>
+    <div id="nav">
+      <button class="transaparent">
+        <i class="material-icons">arrow_back</i> 
+        <span>BACK</span>
+      </button>
+    </div>
+    <div class="container">
+      <section>
+        <div>
+          <div id="question" class="question-card">
+            <div class="flex">
+              <div class="pad5">
+                <i class="material-icons">people</i>
+              </div>
+              <div class="pad5">Amanze Ogbonna</div>
+            </div>
+            <div class="title" id="question-title">Title</div>
+            <div id="question-body">Loading question ... </div>
+          </div>
+        </div>
+        <div id="answer-form-holder">
+          <button class="accent raised" onclick="newAnswer()">ANSWER QUESTION</button>
+          <!-- <div>
+            <textarea name="" id="" cols="30" rows="10"></textarea>
+          </div> -->
+          <br>
+          <br>
+        </div>
+        <div id="empty-state">
+          <span class="title">No answers yet</span>
+        </div>
+        <div id="answer-list">
+          <br>
+        </div>
+      </section>
+    </div>
+  </div>
+  <div id="snackbar"></div>
+  <script>
+    var questionId = null;
+    function getQuestion() {
+      questionId = parseInt(getParameterByName('id'))
+
+      var question = localStorage.question
+      if (question && (question.id === questionId)) {
+        setQuestion(question)
+      } else {
+        http(HOST + '/questions/' + questionId, null, function(res) {
+          setQuestion(res.data)
+        }, function(err) {
+          // show not found
+        })
+      }
+
+      getAnswers(questionId);
+    }
+
+    function setQuestion(question) {
+      var questionTitle = findById('question-title');
+      var questionBody = findById('question-body');
+
+      questionTitle.innerHTML = question.title;
+      // questionTitle.appendChild(
+      //     document.createTextNode(question.title))
+      questionBody.innerHTML = question.body;
+    }
+
+    function getAnswers(questionId) {
+      // var query = findById('query-input').value
+      var options = {
+        method: 'GET',
+        headers: {
+          'Authorization': 'Bearer ' + localStorage.currentUserAuth, 
+        },
+      }
+      http(HOST + '/questions/' + questionId + '/answers', options, function(res) {
+        // clear list
+        clearAnswers()
+        if (res.data.length > 0) {
+          // append to list
+          appendAnswers(res.data)
+        } else {
+          showEmptyState(true)
+        }
+        
+      }, function(err) {
+        // show not found
+      })
+      // return false;    
+    }
+
+    function showEmptyState(isFound) {
+      isFound ? showElement('empty-state') :
+        hideElement('empty-state')
+    }
+
+    function clearAnswers() {
+      showEmptyState(false)
+
+      var answerList = findById('answer-list')
+      while (answerList.firstChild) {
+        answerList.removeChild(answerList.firstChild);
+      }
+    }
+
+    function appendAnswers(answers) {
+      var answerList = findById('answer-list')
+      answers.forEach(answer => {
+        answerList
+        .appendChild(getAnswerTemplate(answer))
+      });
+    }
+
+    function getAnswerTemplate(answer) {
+      // var iconDivNode = document.createElement('DIV')
+      // iconDivNode.className = "pad5"
+      // var iconNode = document.createElement('I')
+      // iconNode.className="material-icons"
+      // iconDivNode.appendChild(iconNode)
+      // iconNode.appendChild(document.createTextNode("people"))
+
+      // var usernameNode = document.createElement('DIV')
+      // usernameNode.className = "pad5"
+      // usernameNode.appendChild(document.createTextNode(
+      //   answer.user ? answer.user.name : 'username'))
+
+      // var infoNode = document.createElement('div')
+      // infoNode.className = "flex"
+      // infoNode.appendChild(iconDivNode)
+      // infoNode.appendChild(usernameNode)
+
+      var rootNode = document.createElement("DIV");
+      rootNode.className = "answer-card"
+      // rootNode.appendChild(
+      //   document.createElement('DIV').appendChild(
+      //     infoNode   
+      //   )
+      // )   
+      
+      // var titleNode = document.createElement('DIV')
+      // titleNode.className = "title"
+
+      // titleNode.appendChild(document.createTextNode(answer.title))  
+      var bodyNode = document.createElement('DIV')
+      bodyNode.appendChild(document.createTextNode(answer.body))
+      // rootNode.appendChild(titleNode)
+      rootNode.appendChild(bodyNode)  
+      
+      return rootNode
+    }
+
+    function newAnswer(){
+      window.location.href = '/questions/' +
+        questionId + '/answers/new?id=' +
+        questionId;
+    }
+
+    function initPage(){
+      getQuestion();
+    }
+
+    function mounted() {
+      initPage()
+    }
+  </script>
+  <style>
+    body {
+      background: #f2f2f2;
+    }
+    .question-card {
+      padding: 16px;
+      background: white;
+      border-radius: 3px;
+      box-shadow: 0px 5px 10px -2px #bcd1db;
+      margin-bottom: 10px;
+      cursor: pointer;
+    }
+    .question-card:hover {
+      box-shadow: 0px 15px 20px -2px #bcd1db;
+    }
+    .answer-card {
+      padding: 16px;
+      background: white;
+      border-radius: 3px;
+      /* box-shadow: 0px 5px 10px -2px #bcd1db; */
+      margin-bottom: 10px;
+      cursor: pointer;
+    }
+    
+  </style>
+</body>
+</html>

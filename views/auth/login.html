@@ -8,7 +8,7 @@
   <script src="/javascripts/main.js"></script>
   <title>Document</title>
 </head>
-<body>
+<body onload="globalMounted()">
   <div>
     <div class="container">
       <section>
@@ -73,7 +73,9 @@
         localStorage.currentUser = JSON.stringify(res.user)
         console.log(res.message);
         setTimeout(() => {
-          window.location.href = '//' + window.location.host + '/questions';
+          var redirect = getParameterByName('redirect');
+          window.location.href = !redirect ? 
+            '//' + window.location.host + '/questions' : redirect;
         }, 1000);
       }, function(err) {
         showSnackbar(getErrorText(err));
@@ -82,6 +84,15 @@
         console.log('Failed');
       })
       return false;      
+    }
+
+    function mounted(){
+      console.log('From Local');
+      
+      // var message = getParameterByName('message');
+      // if (message) {
+      //   showSnackbar(message);
+      // }
     }
   </script>
   <style>

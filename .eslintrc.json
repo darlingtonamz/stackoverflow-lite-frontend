@@ -9,6 +9,7 @@
     "before": true,
     "document": true,
     "fetch": true,
-    "Promise": true
+    "Promise": true,
+    "window": true
   }
 }

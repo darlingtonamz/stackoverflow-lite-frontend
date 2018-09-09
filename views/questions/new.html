@@ -1,0 +1,100 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta http-equiv="X-UA-Compatible" content="ie=edge">
+  <link rel="stylesheet" href="/stylesheets/style.css">
+  <script src="/javascripts/main.js"></script>
+  <title>New Question</title>
+</head>
+<body onload="globalMounted()">
+  <div>
+    <div class="container">
+      <section>
+        <br>
+        <br>
+        <div>
+          <center>
+            <span>New Question</span>
+          </center>
+        </div>
+        <br>
+
+        <div>
+          <div class="card center w300 pad">
+            <form onsubmit="return register(event)">
+              <div class="pad">
+                <input id="question-title" type="text" placeholder="Title" required>
+              </div>
+              <div class="pad">
+                <textarea id="question-body" rows="5" type="textarea" placeholder="Body of your question" required></textarea>
+              </div>
+              <div class="pad text-right">
+                <button class="raised primary"
+                id="submit-button">SUBMIT</button>
+              </div>
+            </form>
+          </div>
+        </div>
+      </section>
+    </div>
+  </div>
+  <div id="snackbar"></div>
+  <script>
+    var register = function(event) {
+      event.preventDefault();
+      // console.log("JSDSJHDFJDFH");
+      var params = {
+        title: getInputValue('question-title'),
+        body: getInputValue('question-body'),
+      }
+      var options = {
+        method: 'post',
+        body: JSON.stringify(params),
+        headers: {
+          'Authorization': 'Bearer ' + localStorage.currentUserAuth, 
+        },
+      }
+
+      var submitButton = findById('submit-button')
+      submitButton.disabled = true;
+
+      submitButton.innerText = 'LOADING...'
+      http(HOST + '/questions', options, function(res) {
+        window.location.href = '//' + window.location.host + 
+          '/questions?message=' + res.message;
+      }, function(err) {
+        showSnackbar(getErrorText(err));
+        submitButton.disabled = false;
+        submitButton.innerText = 'SUBMIT'
+        console.log('Failed: ', err);
+      })
+      return false;
+    }
+
+    function checkAuth() {
+      if(localStorage.currentUserAuth) {
+        return;
+      } 
+      
+      var message = 'You need to be logged in to post a question'
+      window.location.href = '//' + 
+        window.location.host + 
+        '/login?message=' + message +
+        '&redirect=' + window.location.href;
+    }
+
+    function mounted(){
+      // console.log('From Local');
+      checkAuth();
+    }
+  </script>
+  <style>
+    body {
+      background: #c3f1ff;
+    }
+  
+  </style>
+</body>
+</html>
