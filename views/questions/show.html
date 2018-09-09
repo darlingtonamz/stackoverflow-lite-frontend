@@ -21,7 +21,7 @@
       <section>
         <div>
           <div id="question" class="question-card">
-            <div class="flex">
+            <div class="flex" onclick="gotoQuestionOwnerProfile()"> 
               <div class="pad5">
                 <i class="material-icons">people</i>
               </div>
@@ -62,6 +62,18 @@
     function goBack() {
       window.location.href = '//' + window.location.host + 
             '/questions/';
+    }
+
+    function gotoQuestionOwnerProfile(){
+      gotoProfile(question.user_id);
+    }
+    
+    function gotoProfile(userId) {
+      if (userId) {
+        window.location.href = '//' + window.location.host + 
+              '/profile?user_id=' + userId + '&redirect=' +
+              window.location.href;
+      }
     }
 
     function getQuestion() {
@@ -209,9 +221,6 @@
       if (question.accepted_answer_id != answer.id && currentUser && (answer.user_id === currentUser.id)) {
         actionNode.appendChild(deleteNode)
       }
-
-      var rootNode = document.createElement("DIV");
-      rootNode.className = "answer-card flex"
       var bodyNode = document.createElement('DIV')
       bodyNode.className = "flex1 answer-body"
       bodyNode.appendChild(document.createTextNode(answer.body))
@@ -219,20 +228,30 @@
       var markCorrectNode = document.createElement('DIV')
       markCorrectNode.innerHTML = `
         <div>
-          <button style="float: right" onclick="markAnswer(` + answer.id + `)">
+          <button style="float: right" onclick="markAnswer(` + answer.id + `)"
+          class="answer-mark">
             <i class="material-icons answer-actions-icon">check</i> 
             <span>CORRECT</span>
           </button>
         </div>`;
-        
 
+      var rootNode = document.createElement("DIV");
+      var rootTopNode = document.createElement("DIV");
+      var rootBottomNode = document.createElement("DIV");
+      
       if (!question.accepted_answer_id && currentUser && (question.user_id === currentUser.id)) {
-        bodyNode.appendChild(markCorrectNode)
+        rootBottomNode.appendChild(markCorrectNode)
       }
 
-      rootNode.appendChild(statNode)  
-      rootNode.appendChild(bodyNode)  
-      rootNode.appendChild(actionNode)  
+      rootNode.className = "answer-card"
+      rootTopNode.className = "flex"
+      rootBottomNode.className = "flex"
+      rootTopNode.appendChild(statNode)  
+      rootTopNode.appendChild(bodyNode)  
+      rootTopNode.appendChild(actionNode)  
+
+      rootNode.appendChild(rootTopNode)  
+      rootNode.appendChild(rootBottomNode)  
       
       return rootNode
     }
@@ -328,11 +347,11 @@
       margin-right: 10px; 
     }
 
-    .answer-actions {
+    .answer-actions, .answer-mark {
       color: #ccc;
     }
 
-    .answer-actions-icon:hover {
+    .answer-actions-icon:hover, .answer-mark:hover {
       color: #333;
     }
     
