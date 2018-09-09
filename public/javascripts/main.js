@@ -16,11 +16,12 @@ function getInputValue(id) {
 }
 
 function hideElement(id) {
-  findById(id).style.display = 'none';
+  // findById(id).style.display = 'none !important';
+  findById(id).style.visibility = 'hidden';
 }
 
 function showElement(id) {
-  findById(id).style.display = 'block';
+  findById(id).style.visibility = 'visible';
 }
 
 // var json = function(response) {

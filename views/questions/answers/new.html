@@ -32,7 +32,7 @@
 
         <div>
           <div class="card center w500 pad">
-            <form onsubmit="return register(event)">
+            <form onsubmit="return createAnswer(event)">
               <div class="pad">
                 <textarea id="answer-body" rows="5" type="textarea" placeholder="Body of your answer" required></textarea>
               </div>
@@ -74,7 +74,7 @@
       questionBody.innerHTML = question.body;
     }
     
-    function register(event) {
+    function createAnswer(event) {
       event.preventDefault();
       // console.log("JSDSJHDFJDFH");
       var params = {
@@ -95,7 +95,7 @@
       submitButton.innerText = 'LOADING...'
       http(HOST + '/questions/' + questionId + '/answers', options, function(res) {
         window.location.href = '//' + window.location.host + 
-          '/questions/' + questionId + '?id=' + questionId + 'message=' + res.message;
+          '/questions/' + questionId + '?id=' + questionId + '&message=' + res.message;
       }, function(err) {
         showSnackbar(getErrorText(err));
         submitButton.disabled = false;

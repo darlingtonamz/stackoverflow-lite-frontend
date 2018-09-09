@@ -49,23 +49,32 @@
     </div>
   </div>
   <div id="snackbar"></div>
+  <div class="overlay" id="loading-overlay">
+    <div class="card pad">
+      Loading ...
+    </div>
+  </div>
   <script>
     var questionId = null;
+    var question = null;
+    var currentUser = localStorage.currentUser ? JSON.parse(localStorage.currentUser) : null
+
     function getQuestion() {
       questionId = parseInt(getParameterByName('id'))
 
-      var question = localStorage.question
+      question = localStorage.question ? JSON.parse(localStorage.question) : null
       if (question && (question.id === questionId)) {
         setQuestion(question)
       } else {
         http(HOST + '/questions/' + questionId, null, function(res) {
           setQuestion(res.data)
+          question = res.data
+          getAnswers(questionId);
         }, function(err) {
           // show not found
         })
       }
 
-      getAnswers(questionId);
     }
 
     function setQuestion(question) {
@@ -102,6 +111,29 @@
       // return false;    
     }
 
+    function deleteAnswer(answerId) {
+      showElement('loading-overlay');
+      // console.log('AnswerId', answerId);
+      
+      var options = {
+        method: 'DELETE',
+        headers: {
+          'Authorization': 'Bearer ' + localStorage.currentUserAuth, 
+        },
+      }
+      http(HOST + '/questions/' + questionId + '/answers/' + answerId, options, 
+        function(res) {
+          // hideElement('loading-overlay'); 
+          // set         
+          window.location.href = '//' + window.location.host + 
+            '/questions/' + questionId + '?id=' + questionId + '&message=' + res.message;
+          
+        }, function(err) {
+          showSnackbar(getErrorText(err));
+          hideElement('loading-overlay');
+        })
+    }
+
     function showEmptyState(isFound) {
       isFound ? showElement('empty-state') :
         hideElement('empty-state')
@@ -125,39 +157,77 @@
     }
 
     function getAnswerTemplate(answer) {
-      // var iconDivNode = document.createElement('DIV')
-      // iconDivNode.className = "pad5"
-      // var iconNode = document.createElement('I')
-      // iconNode.className="material-icons"
-      // iconDivNode.appendChild(iconNode)
-      // iconNode.appendChild(document.createTextNode("people"))
+      var statNode = document.createElement('DIV')
+      statNode.innerHTML = `
+        <div style="margin-right: 20px;">
+          <center>
+            <div class="fab" onclick="voteAnswerUp(` + answer.id + `)">
+              <i class="material-icons">arrow_drop_up</i>
+            </div>
+          </center>
+          <div>
+            <center id="answer-votes-`+ answer.id +`">
+            `+ (answer.votes ? answer.votes : 0) +`  
+            </center>
+          </div>
+          <center>
+            <div class="fab" onclick="voteAnswerDown(` + answer.id + `)">
+              <i class="material-icons">arrow_drop_down</i>
+            </div>
+          </center>
+        <div>
+      `;
+      var statMarkedNode = document.createElement('DIV')
+      statMarkedNode.innerHTML = `
+        <div>
+          <div class="fab">
+            <i class="material-icons">check</i>
+          </div>
+        </div>`;
 
-      // var usernameNode = document.createElement('DIV')
-      // usernameNode.className = "pad5"
-      // usernameNode.appendChild(document.createTextNode(
-      //   answer.user ? answer.user.name : 'username'))
+      if (question.accepted_answer_id == answer.id) {
+        statNode.appendChild(statMarkedNode)
+      }
 
-      // var infoNode = document.createElement('div')
-      // infoNode.className = "flex"
-      // infoNode.appendChild(iconDivNode)
-      // infoNode.appendChild(usernameNode)
+      var deleteNode = document.createElement('DIV')
+      deleteNode.innerHTML = `
+        <div>
+          <center>
+            <div class="fab" onclick="deleteAnswer(` + answer.id + `)">
+              <i class="material-icons answer-actions-icon">delete</i>
+            </div>
+          </center>
+        </div>`;
+      var actionNode = document.createElement('DIV')
+      actionNode.className = 'answer-actions';
+
+      if (question.accepted_answer_id != answer.id && currentUser && (answer.user_id === currentUser.id)) {
+        actionNode.appendChild(deleteNode)
+      }
 
       var rootNode = document.createElement("DIV");
-      rootNode.className = "answer-card"
-      // rootNode.appendChild(
-      //   document.createElement('DIV').appendChild(
-      //     infoNode   
-      //   )
-      // )   
-      
-      // var titleNode = document.createElement('DIV')
-      // titleNode.className = "title"
-
-      // titleNode.appendChild(document.createTextNode(answer.title))  
+      rootNode.className = "answer-card flex"
       var bodyNode = document.createElement('DIV')
+      bodyNode.className = "flex1 answer-body"
       bodyNode.appendChild(document.createTextNode(answer.body))
-      // rootNode.appendChild(titleNode)
+      
+      var markCorrectNode = document.createElement('DIV')
+      markCorrectNode.innerHTML = `
+        <div>
+          <button style="float: right" onclick="markAnswer(` + answer.id + `)">
+            <i class="material-icons answer-actions-icon">check</i> 
+            <span>CORRECT</span>
+          </button>
+        </div>`;
+        
+
+      if (!question.accepted_answer_id && currentUser && (question.user_id === currentUser.id)) {
+        bodyNode.appendChild(markCorrectNode)
+      }
+
+      rootNode.appendChild(statNode)  
       rootNode.appendChild(bodyNode)  
+      rootNode.appendChild(actionNode)  
       
       return rootNode
     }
@@ -168,6 +238,56 @@
         questionId;
     }
 
+    function voteAnswerUp(answerId) {
+      voteAnswer(answerId, 1)
+    }
+
+    function voteAnswerDown(answerId) {
+      voteAnswer(answerId, -1)
+    }
+
+    function voteAnswer(answerId, value) {
+      showElement('loading-overlay');
+      
+      var options = {
+        method: 'PUT',
+        body: JSON.stringify({
+          value: value
+        }),
+        headers: {
+          'Authorization': 'Bearer ' + localStorage.currentUserAuth, 
+        },
+      }
+      http(HOST + '/answers/' + answerId + '/answer_votes', options, 
+        function(res) {
+          window.location.href = '//' + window.location.host + 
+            '/questions/' + questionId + '?id=' + questionId + '&message=' + res.message;
+        }, function(err) {
+          showSnackbar(getErrorText(err));
+          hideElement('loading-overlay');
+        })
+    }
+
+    function markAnswer(answerId) {
+      showElement('loading-overlay');
+      
+      var options = {
+        method: 'PUT',
+        headers: {
+          'Authorization': 'Bearer ' + localStorage.currentUserAuth, 
+        },
+      }
+      // /questions/:question_id/answers/:id
+      http(HOST + '/questions/' + questionId + '/answers/' + answerId , options, 
+        function(res) {
+          window.location.href = '//' + window.location.host + 
+            '/questions/' + questionId + '?id=' + questionId + '&message=' + res.message;
+        }, function(err) {
+          showSnackbar(getErrorText(err));
+          hideElement('loading-overlay');
+        })
+    }
+    
     function initPage(){
       getQuestion();
     }
@@ -197,7 +317,18 @@
       border-radius: 3px;
       /* box-shadow: 0px 5px 10px -2px #bcd1db; */
       margin-bottom: 10px;
-      cursor: pointer;
+    }
+
+    .answer-body{ 
+      margin-right: 10px; 
+    }
+
+    .answer-actions {
+      color: #ccc;
+    }
+
+    .answer-actions-icon:hover {
+      color: #333;
     }
     
   </style>

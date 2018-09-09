@@ -9,6 +9,7 @@ a {
 }
 
 .flex {display:flex;}
+.flex1 {flex: 1;}
 .pad {padding: 16px;}
 .pad5 {padding: 5px;}
 
@@ -51,10 +52,10 @@ button {
   border-radius: 2px;
   font-size: 14px;
   font-weight: 500;
+  cursor: pointer;
 }
 
 button.raised {
-  cursor: pointer;
   border-radius: 3px;
   /* background: white; */
   box-shadow: 0 3px 1px -2px rgba(0, 0, 0, 0.2), 0 2px 2px 0 rgba(0, 0, 0, 0.14), 0 1px 5px 0 rgba(0, 0, 0, 0.12);
@@ -67,6 +68,22 @@ button:disabled { background: #ccc; color: #333; }
 #nav>button>span{
   font-size: 1.3em;
   vertical-align: top;
+}
+
+.fab {
+  border-radius: 50%;
+  background: none;
+  cursor: pointer;
+  height: 25px;
+  width: 25px;
+  /* padding: 5px; */
+  text-align: center;
+}
+.fab>i {
+  vertical-align: -webkit-baseline-middle;
+}
+.fab:active, .fab:focus {
+  background: #f2f2f2;
 }
 div.center {
   margin-left: auto;
@@ -127,10 +144,23 @@ div.center {
   from {bottom: 0; opacity: 1;}
   to {bottom: -30px; opacity: 0;}
 }
+/*  */
 
 .title{    
   font-size: 2em;
   color: #333;
   margin-bottom: 10px;
 }
-/*  */
+
+.overlay {  
+  visibility: hidden;
+  background: rgba(0,0,0,0.5);
+  position: absolute;
+  top: 0;
+  right: 0;
+  height: 100vh;
+  width: 100vw;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
