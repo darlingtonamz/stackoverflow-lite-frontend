@@ -15,6 +15,9 @@ router.get('/login', function(req, res, next) {
 });
 
 
+router.get('/profile', function(req, res, next) {
+  res.render('profiles/show', { title: 'Questions' });
+});
 router.get('/questions', function(req, res, next) {
   res.render('questions/index', { title: 'Questions' });
 });

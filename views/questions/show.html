@@ -12,7 +12,7 @@
 <body onload="globalMounted()">
   <div>
     <div id="nav">
-      <button class="transaparent">
+      <button class="transaparent" onclick="goBack()">
         <i class="material-icons">arrow_back</i> 
         <span>BACK</span>
       </button>
@@ -58,6 +58,11 @@
     var questionId = null;
     var question = null;
     var currentUser = localStorage.currentUser ? JSON.parse(localStorage.currentUser) : null
+
+    function goBack() {
+      window.location.href = '//' + window.location.host + 
+            '/questions/';
+    }
 
     function getQuestion() {
       questionId = parseInt(getParameterByName('id'))

@@ -1,0 +1,105 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta http-equiv="X-UA-Compatible" content="ie=edge">
+  <link rel="stylesheet" href="/stylesheets/style.css">
+  <script src="/javascripts/main.js"></script>
+  <link rel="stylesheet" href="//fonts.googleapis.com/css?family=Roboto:400,500,700,400italic|Material+Icons">
+  <title>User details</title>
+</head>
+<body onload="globalMounted()">
+  <div>
+    <div id="nav">
+      <button class="transaparent" onclick="goBack()">
+        <i class="material-icons">arrow_back</i> 
+        <span>BACK</span>
+      </button>
+    </div>
+    <div class="container">
+      
+    </div>
+  </div>
+  <div id="snackbar"></div>
+  <div class="overlay" id="loading-overlay">
+    <div class="card pad">
+      Loading ...
+    </div>
+  </div>
+  <script>
+    var userId = null;
+    var user = null;
+    var currentUser = localStorage.currentUser ? JSON.parse(localStorage.currentUser) : null
+
+    function goBack() {
+      window.location.href = '//' + window.location.host + 
+            '/questions/';
+    }
+
+    function getUser() {
+      userId = parseInt(getParameterByName('user_id'))
+
+      user = localStorage.user ? JSON.parse(localStorage.user) : null
+      if (user && (user.id === userId)) {
+        setUser(user)
+      } else {
+        http(HOST + '/users/' + userId, null, function(res) {
+          setUser(res.data)
+          user = res.data
+        }, function(err) {
+          // show not found
+        })
+      }
+    }
+
+    function setUser(){
+
+    }
+    
+    function initPage(){
+      getUser();
+    }
+
+    function mounted() {
+      initPage()
+    }
+  </script>
+  <style>
+    body {
+      background: #f2f2f2;
+    }
+    .user-card {
+      padding: 16px;
+      background: white;
+      border-radius: 3px;
+      box-shadow: 0px 5px 10px -2px #bcd1db;
+      margin-bottom: 10px;
+      cursor: pointer;
+    }
+    .user-card:hover {
+      box-shadow: 0px 15px 20px -2px #bcd1db;
+    }
+    .answer-card {
+      padding: 16px;
+      background: white;
+      border-radius: 3px;
+      /* box-shadow: 0px 5px 10px -2px #bcd1db; */
+      margin-bottom: 10px;
+    }
+
+    .answer-body{ 
+      margin-right: 10px; 
+    }
+
+    .answer-actions {
+      color: #ccc;
+    }
+
+    .answer-actions-icon:hover {
+      color: #333;
+    }
+    
+  </style>
+</body>
+</html>
