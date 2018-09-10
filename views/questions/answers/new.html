@@ -5,11 +5,18 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <meta http-equiv="X-UA-Compatible" content="ie=edge">
   <link rel="stylesheet" href="/stylesheets/style.css">
+  <link rel="stylesheet" href="//fonts.googleapis.com/css?family=Roboto:400,500,700,400italic|Material+Icons">
   <script src="/javascripts/main.js"></script>
   <title>New Answer</title>
 </head>
 <body onload="globalMounted()">
   <div>
+    <div id="nav">
+      <button class="transaparent" onclick="goBack()">
+        <i class="material-icons">arrow_back</i> 
+        <span>BACK</span>
+      </button>
+    </div>
     <div class="container">
         <div>
           <div id="question" class="question-card">
@@ -49,6 +56,12 @@
   <div id="snackbar"></div>
   <script>
     var questionId = null;
+    
+    function goBack() {
+      window.location.href = '//' + window.location.host + 
+        '/questions/';
+    }
+    
     function getQuestion() {
       questionId = parseInt(getParameterByName('id'))
 
