@@ -9,6 +9,11 @@ a {
 }
 
 .flex {display:flex;}
+.flex.center-flex{
+  /* display: flex; */
+  justify-content: center;
+  align-items: center;
+}
 .flex1 {flex: 1;}
 .pad {padding: 16px;}
 .pad5 {padding: 5px;}
